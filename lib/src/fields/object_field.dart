@@ -6,11 +6,15 @@ class ObjectField extends StatefulWidget {
   final String fieldKey;
   final Map<String, dynamic> dataSchema;
   final Map<String, dynamic> formData;
+  final void Function(String, dynamic) onEdited;
+  final void Function(String, dynamic) setProperty;
 
   ObjectField({
     @required this.fieldKey,
     @required this.dataSchema,
     this.formData,
+    this.onEdited,
+    this.setProperty,
   });
 
   @override
@@ -60,6 +64,8 @@ class _ObjectFieldState extends State<ObjectField> {
         fieldKey: '$keyPrefix$key',
         dataSchema: value,
         formData: widget.formData,
+        onEdited: widget.onEdited,
+        setProperty: widget.setProperty,
       ));
     });
     return ListView(

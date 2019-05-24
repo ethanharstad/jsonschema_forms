@@ -14,7 +14,7 @@ Map<String, dynamic> dataSchema = {
         "name": {
           "type": "object",
           "properties": {
-            "firstName": {
+            "firstName[0]": {
               "type": "string",
               "title": "First name",
               "default": "Chuck"
@@ -34,7 +34,25 @@ Map<String, dynamic> dataSchema = {
       "type": "string",
       "title": "Date Joined Organization"
     },
-    "telephone": {"type": "string", "title": "Telephone", "minLength": 10}
+    "telephone": {"type": "string", "title": "Telephone", "minLength": 10},
+    "scheduling": {
+      "type": "object",
+      "title": "Scheduling",
+      "properties": {
+        "scheduled": {"type": "boolean", "title": "Scheduled"},
+        "fullTime": {"type": "boolean", "title": "Full Time"},
+        "targetHours": {"type": "number", "title": "Target Hours"},
+        "shift": {"type": "string", "title": "Shift"}
+      }
+    },
+    "qualifications": {
+      "type": "array",
+      "title": "Qualifications",
+      "items": {
+        "type": "string",
+        "enum": ["FF1", "FF2", "FO1", "FO2"]
+      }
+    }
   }
 };
 

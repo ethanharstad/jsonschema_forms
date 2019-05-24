@@ -13,6 +13,8 @@ class JsonFormField extends StatefulWidget {
   final Map<String, dynamic> uiSchema;
   final Map<String, dynamic> formData;
   final FormMode formMode;
+  final void Function(String, dynamic) onEdited;
+  final void Function(String, dynamic) setProperty;
 
   JsonFormField({
     @required this.fieldKey,
@@ -20,14 +22,12 @@ class JsonFormField extends StatefulWidget {
     this.uiSchema,
     this.formData,
     this.formMode: FormMode.fill,
+    this.onEdited,
+    this.setProperty,
   });
 
   @override
   _JsonFormFieldState createState() => _JsonFormFieldState();
-
-  Map<String, dynamic> dump() {
-    return {};
-  }
 }
 
 class _JsonFormFieldState extends State<JsonFormField> {
@@ -45,12 +45,16 @@ class _JsonFormFieldState extends State<JsonFormField> {
           fieldKey: widget.fieldKey,
           dataSchema: widget.dataSchema,
           formData: formData,
+          onEdited: _handleChanges,
+          setProperty: widget.setProperty,
         );
       case 'string':
         return StringField(
           fieldKey: widget.fieldKey,
           dataSchema: widget.dataSchema,
           formData: formData,
+          onEdited: _handleChanges,
+          setProperty: widget.setProperty,
         );
       case 'boolean':
         return BooleanField(
@@ -58,6 +62,8 @@ class _JsonFormFieldState extends State<JsonFormField> {
           dataSchema: widget.dataSchema,
         );
       case 'number':
+      case 'integer':
+      case 'float':
         return NumberField(
           fieldKey: widget.fieldKey,
           dataSchema: widget.dataSchema,
@@ -73,10 +79,15 @@ class _JsonFormFieldState extends State<JsonFormField> {
     }
   }
 
+  void _handleChanges(String key, dynamic value) {
+    print('json_form_field ${widget.fieldKey}: $value');
+    if (widget.onEdited != null) {
+      widget.onEdited(widget.fieldKey, value);
+    }
+  }
+
   dynamic _extractFormData() {
-    print('extractFormData(${widget.fieldKey}): ${widget.formData}');
     if (widget.formData == null) {
-      print('formData was null');
       return null;
     }
     if (widget.fieldKey == 'root') {
