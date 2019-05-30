@@ -24,54 +24,36 @@ class ObjectField extends StatefulWidget {
 class _ObjectFieldState extends State<ObjectField> {
   @override
   Widget build(BuildContext context) {
-    List<Widget> children = [
-      _buildTitle(),
-      _buildDescription(),
-      _buildProperties()
-    ];
-    return ListView(
-      shrinkWrap: true,
-      physics: ClampingScrollPhysics(),
-      children: children.where((Widget element) => element != null).toList(),
-    );
-  }
-
-  Widget _buildTitle() {
-    if (widget.dataSchema['title'] != null) {
-      return Text(
-        '${widget.dataSchema['title']} (${widget.fieldKey})',
-        style: Theme.of(context).textTheme.title,
-      );
-    }
-    return null;
-  }
-
-  Widget _buildDescription() {
-    if (widget.dataSchema['description'] != null) {
-      return Text(
-        widget.dataSchema['description'],
-        style: Theme.of(context).textTheme.body2,
-      );
-    }
-    return null;
-  }
-
-  Widget _buildProperties() {
     String keyPrefix = widget.fieldKey != 'root' ? '${widget.fieldKey}.' : '';
-    List<Widget> widgets = <Widget>[];
-    widget.dataSchema['properties'].forEach((String key, dynamic value) {
-      widgets.add(JsonFormField(
-        fieldKey: '$keyPrefix$key',
-        dataSchema: value,
-        formData: widget.formData,
-        onEdited: widget.onEdited,
-        setProperty: widget.setProperty,
-      ));
-    });
     return ListView(
       shrinkWrap: true,
       physics: ClampingScrollPhysics(),
-      children: widgets,
+      children: <Widget>[
+        if (widget.dataSchema['title'] != null)
+          Text(
+            '${widget.dataSchema['title']} (${widget.fieldKey})',
+            style: Theme.of(context).textTheme.title,
+          ),
+        if (widget.dataSchema['description'] != null)
+          Text(
+            widget.dataSchema['description'],
+            style: Theme.of(context).textTheme.body2,
+          ),
+        ListView(
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          children: <Widget>[
+            for (String key in widget.dataSchema['properties'].keys)
+              JsonFormField(
+                fieldKey: '$keyPrefix$key',
+                dataSchema: widget.dataSchema['properties'][key],
+                formData: widget.formData,
+                onEdited: widget.onEdited,
+                setProperty: widget.setProperty,
+              )
+          ],
+        ),
+      ],
     );
   }
 }
